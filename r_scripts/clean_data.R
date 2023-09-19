@@ -44,21 +44,22 @@ nfn_unreconciled %>% filter(itd_cm >.7) %>% select(itd_cm)
 ############
 #next read in researcher measurements, join and clean
 ###
-alec <- read_excel("imageJ-21776.xlsx",  sheet = "ImageJ-Alec") %>%
+researcher_file = "raw_data/imageJ-21776-19sep2023.xlsx"
+alec <- read_excel(researcher_file,  sheet = "ImageJ-Alec") %>%
   mutate(data_collector= 'alec')
-emma <- read_excel("imageJ-21776.xlsx",  sheet = "ImageJ-Emma")%>%
-  mutate(data_collector= 'emma') %>%
+hanyang <- read_excel(researcher_file,  sheet = "ImageJ-Hanyang")%>%
+  mutate(data_collector= 'hanyang') %>%
   filter(!is.na(`Measurement-tegula (cm)`))
-kaytlin <- read_excel("imageJ-21776.xlsx",  sheet = "ImageJ-Kaytlin")%>%
+kaytlin <- read_excel(researcher_file,  sheet = "ImageJ-Kaytlin")%>%
   mutate(data_collector= 'kaytlin') 
-luz <- read_excel("imageJ-21776.xlsx",  sheet = "ImageJ-Luz")%>%
+luz <- read_excel(researcher_file,  sheet = "ImageJ-Luz")%>%
   mutate(data_collector= 'luz')
-rosie <- read_excel("imageJ-21776.xlsx",  sheet = "ImageJ-Rosie")%>%
+rosie <- read_excel(researcher_file,  sheet = "ImageJ-Rosie")%>%
   mutate(data_collector= 'rosie')
 
 # bind dataframes from all researchers together 
 # and add column for catalog number
-researcher = alec %>% bind_rows(emma,kaytlin, luz, rosie) %>%
+researcher = alec %>% bind_rows(hanyang,kaytlin, luz, rosie) %>%
   rename(tegula_cm = 'Measurement-tegula (cm)',scale_cm = "True-measurement-scale (cm)") %>%
   mutate(catalogNumber = gsub("\\..*", "",Filename)) %>%
   select(catalogNumber, tegula_cm, scale_cm, data_collector, everything()) %>%
@@ -70,5 +71,6 @@ researcher %>% group_by(data_collector) %>% summarize(n=n()) #emma's missing som
 
 
 # # save files as processed data
-# write_csv(researcher, 'processed_data/researcher_measurements_28aug2023.csv')
+# write_csv(researcher, 'processed_data/researcher_measurements_19sep2023.csv')
+
 # write_csv(nfn_unreconciled, 'processed_data/nfn_measurements_28aug2023.csv')
